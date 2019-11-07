@@ -21,65 +21,71 @@ functions:
 """
 import pandas as pd
 
-#import the data
-DF = pd.read_csv('https://data.seattle.gov/api/views/tw7j-DFaw/rows.csv?accessType=DOWNLOAD')
-DF = DF.head(100) # only fetch first 10 rows for testing
+DATAFRAMES = pd.read_csv(
+    'https://data.seattle.gov/api/views/tw7j-df_importaw/rows.csv?accessType=DOWNLOAD')
 
-def test_datatype(DF):
+def test_datatype(df_import):
     """Test if all columns have values of the correct type
 
     Parameters
     ----------
-    DF : Pandas Dataframe
+    df_import : Pandas Dataframe
         The dataset imported as Pandas Dataframe
     Returns
     -------
     bool
         a bool value: True if the datatype of each column match
     """
-    columns = list(DF)
+    columns = list(df_import)
     for name in columns:
         try:
-            tp = (DF[name].map(type) == type(DF[name].iloc[1].item())).any().tolist()
+            tp_name = (
+                isinstance(
+                    df_import[name].iloc[1].item(),
+                    df_import[name].map(type))).any().tolist()
         except AttributeError:
-            tp = (DF[name].map(type) == type(DF[name].iloc[1])).any().tolist()
-    return tp
+            tp_name = (
+                isinstance(
+                    df_import[name].iloc[1],
+                    df_import[name].map(type))).any().tolist()
+    return tp_name
 
 
-def test_column_names(DF):
+def test_column_names(df_import):
     """Test if the dataframe has expected columns
 
     Parameters
     ----------
-    DF : Pandas Dataframe
+    df_import : Pandas Dataframe
         The dataset imported as Pandas Dataframe
     Returns
     -------
     bool
         a bool value: True if the dataframe has expected columns
     """
-    DF_columns = sorted(DF.columns.tolist())
-    DF_checklist = ['trip_id',
-                    'starttime',
-                    'stoptime',
-                    'bikeid',
-                    'tripduration',
-                    'from_station_name',
-                    'to_station_name',
-                    'from_station_id',
-                    'to_station_id',
-                    'usertype',
-                    'gender',
-                    'birthyear']
-    if DF_columns == sorted(DF_checklist):
-        return True 
+    df_import_columns = sorted(df_import.columns.tolist())
+    df_import_checklist = ['trip_id',
+                           'starttime',
+                           'stoptime',
+                           'bikeid',
+                           'tripduration',
+                           'from_station_name',
+                           'to_station_name',
+                           'from_station_id',
+                           'to_station_id',
+                           'usertype',
+                           'gender',
+                           'birthyear']
+    if df_import_columns == sorted(df_import_checklist):
+        return True
 
-def test_nan_values(DF):
+
+def test_nan_values(df_import):
     """Test if the dataframe has non value
 
     Parameters
     ----------
-    DF : Pandas Dataframe
+    df_import : Pandas Dataframe
         The dataset imported as Pandas Dataframe
 
     Returns
@@ -87,14 +93,15 @@ def test_nan_values(DF):
     bool
         a bool value: True if the dataframe has non value
     """
-    return DF.notnull().values.any()
+    return df_import.notnull().values.any()
 
-def test_least_row_counts(DF):
+
+def test_least_row_counts(df_import):
     """Test if the dataframe has at least one row of data
 
     Parameters
     ----------
-    DF : Pandas Dataframe
+    df_import : Pandas Dataframe
         The dataset imported as Pandas Dataframe
 
     Returns
@@ -102,7 +109,8 @@ def test_least_row_counts(DF):
     bool
         a bool value: True if the dataframe has at least one row of data
     """
-    return DF.shape[0]>=1
+    return df_import.shape[0] >= 1
+
 
 if __name__ == '__main__':
     """Main function
@@ -112,8 +120,9 @@ if __name__ == '__main__':
     bool
         a bool value if the dataframe pass all the tests
     """
-    #import the data
-    DF = pd.read_csv('https://data.seattle.gov/api/views/tw7j-DFaw/rows.csv?accessType=DOWNLOAD')
-    #only fetch first 10 rows for testing
-    DF = DF.head(100) 
-    print(test_column_names(DF) & test_datatype(DF) & test_least_row_counts(DF) &test_nan_values(DF))
+    DATAFRAME = pd.read_csv(
+        'https://data.seattle.gov/api/views/tw7j-df_importaw/rows.csv?accessType=DOWNLOAD')
+    # only fetch first 10 rows for testing
+    DATAFRAME = DATAFRAME.head(10)
+    print(test_column_names(DATAFRAME) & test_datatype(DATAFRAME) &
+          test_least_row_counts(DATAFRAME) & test_nan_values(DATAFRAME))
